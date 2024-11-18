@@ -80,7 +80,46 @@ public class Shop {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
+	private void sellMenu() {
+		int i = 1;
+		for (textrpg.Item item : player.items) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append(i++ + "." + item + "\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		sell(textrpg.TextRPG.input("판매할 상품 선택(수수료50%): ") - 1);
+	}
+
+	private void sell(int x) {
+		if (x < 0 || x >= player.items.size()) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append("판매실패\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		player.money += player.items.get(x).getPrice() / 2;
+		player.items.remove(x);
+		textrpg.TextRPG.buffer.setLength(0);
+		textrpg.TextRPG.buffer.append("판매완료\n");
+		try {
+			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+			textrpg.TextRPG.writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void setItem() {
