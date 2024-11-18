@@ -3,9 +3,6 @@ package textrpg;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import testrpg.Item;
-import testrpg.Main;
-
 public class Player {
 	private boolean isRun;
 	public int money = 10000;
@@ -13,7 +10,7 @@ public class Player {
 	public ArrayList<Item> items = new ArrayList<>();
 	public ArrayList<units.Hero> guilds = new ArrayList<>();
 	public ArrayList<units.Hero> partys = new ArrayList<>();
-	
+
 	private static Player instance = new Player();
 
 	public static Player getInstance() {
@@ -25,7 +22,7 @@ public class Player {
 		guilds.add(new units.Hero("뭐", 1, 1, 1, 1, 1));
 		guildList();
 	}
-	
+
 	private void guildList() {
 		if (guilds.size() == 0) {
 			TextRPG.buffer.setLength(0);
@@ -48,7 +45,7 @@ public class Player {
 			PrintEquip(TextRPG.input("뒤로가기(0)번 / 길드원 선택: ") - 1);
 		}
 	}
-	
+
 	private void PrintEquip(int x) {
 		if (x == -1) {
 			isRun = false;
@@ -64,7 +61,7 @@ public class Player {
 
 		equip(x, TextRPG.input("종료(0)번 / 장착할 장비 선택: ") - 1);
 	}
-	
+
 	private void printItemList() {
 		int i = 1;
 		for (Item item : items) {
@@ -78,7 +75,53 @@ public class Player {
 			}
 		}
 	}
-	
-	
-	
+
+	private void equip(int idx, int item) {
+		if (item == -1) {
+			isRun = false;
+		}
+
+		if (item < 0 || item >= items.size()) {
+			return;
+		}
+
+		if (items.get(item).getKind() == Item.WEAPON) {
+			if (guilds.get(idx).getWeapon() == null) {
+				guilds.get(idx).setWeapon(items.get(item));
+				items.remove(item);
+			} else {
+				items.add(guilds.get(idx).getWeapon());
+				guilds.get(idx).setWeapon(items.get(item));
+				items.remove(item);
+			}
+		} else if (items.get(item).getKind() == Item.ARMOR) {
+			if (guilds.get(idx).getArmor() == null) {
+				guilds.get(idx).setArmor(items.get(item));
+				items.remove(item);
+			} else {
+				items.add(guilds.get(idx).getArmor());
+				guilds.get(idx).setArmor(items.get(item));
+				items.remove(item);
+			}
+		} else if (items.get(item).getKind() == Item.RING) {
+			if (guilds.get(idx).getRing() == null) {
+				guilds.get(idx).setRing(items.get(item));
+				items.remove(item);
+			} else {
+				items.add(guilds.get(idx).getRing());
+				guilds.get(idx).setRing(items.get(item));
+				items.remove(item);
+			}
+		}
+
+		TextRPG.buffer.setLength(0);
+		TextRPG.buffer.append("장비 장착 완료.\n");
+		try {
+			TextRPG.writer.append(TextRPG.buffer);
+			TextRPG.writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
