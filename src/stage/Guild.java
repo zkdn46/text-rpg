@@ -54,8 +54,10 @@ public class Guild {
 
 	private void addGuild() {
 		CreateGuild();
-
+		printBuyGuild();
 		int sel = textrpg.TextRPG.input("모집 할 길드원 선택: ") - 1;
+
+		player.guilds.add(buyGuild.get(sel));
 	}
 
 	private void CreateGuild() {
@@ -68,13 +70,21 @@ public class Guild {
 			buyGuild.add(new units.Hero(CreateClassType(), 1, ranHp, ranMp, ranAtt, ranDef));
 		}
 	}
-
+	
 	private String CreateClassType() {
 		String[] classTypes = { "전사", "도적", "마법사", "힐러" };
 		int ranClass = ran.nextInt(4);
 		String ranclass = classTypes[ranClass];
 
 		return ranclass;
+	}
+
+	private void printBuyGuild() {
+		for (int i = 0; i < buyGuild.size(); i++) {
+			System.out.print(i + 1 + ")");
+			buyGuild.get(i).printStatus();
+			buyGuild.get(i).printEquitedItem();
+		}
 	}
 
 	private void leaveGuild() {
