@@ -3,6 +3,7 @@ package textrpg;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import testrpg.Item;
 import testrpg.Main;
 
 public class Player {
@@ -63,5 +64,21 @@ public class Player {
 
 		equip(x, TextRPG.input("종료(0)번 / 장착할 장비 선택: ") - 1);
 	}
+	
+	private void printItemList() {
+		int i = 1;
+		for (Item item : items) {
+			TextRPG.buffer.setLength(0);
+			TextRPG.buffer.append(i++ + "." + item + "\n");
+			try {
+				TextRPG.writer.append(TextRPG.buffer);
+				TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	
 }
