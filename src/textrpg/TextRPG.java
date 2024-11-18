@@ -32,6 +32,18 @@ public class TextRPG {
 		}
 	}
 
+	private void printMenu() {
+		buffer.setLength(0);
+		buffer.append("=== TEXT RPG ===\n");
+		buffer.append("1)마을 2)던전 3)종료\n");
+		try {
+			writer.append(buffer);
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void play() {
 		int sel = input("메뉴 선택: ");
 		if (sel == TOWN) {
@@ -44,7 +56,7 @@ public class TextRPG {
 	}
 
 	private void town() {
-		town.printMenu();
+		town.townRun();
 	}
 
 	private void dungeon() {
@@ -63,19 +75,7 @@ public class TextRPG {
 		}
 	}
 
-	private void printMenu() {
-		buffer.setLength(0);
-		buffer.append("=== test RPG ===\n");
-		buffer.append("1)마을 2)던전 3)종료\n");
-		try {
-			writer.append(buffer);
-			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected static int input(String msg) {
+	public static int input(String msg) {
 		int num = -1;
 		try {
 			writer.append(msg);
