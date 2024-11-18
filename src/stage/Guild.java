@@ -60,8 +60,9 @@ public class Guild {
 	private void addGuild() {
 		CreateGuild();
 		printBuyGuild();
-		int sel = textrpg.TextRPG.input("소지금: " + player.getMoney() + "\n모집 할 길드원 선택(구매가격 1000: ") - 1;
+		int sel = textrpg.TextRPG.input("소지금: " + player.getMoney() + "\n모집 할 길드원 선택(구매가격 1000): ") - 1;
 		player.guilds.add(buyGuild.get(sel));
+		player.setMoney(player.getMoney() - 1000);
 	}
 
 	private void CreateGuild() {
@@ -121,7 +122,7 @@ public class Guild {
 			e.printStackTrace();
 		}
 
-		int sel = textrpg.TextRPG.input("메뉴 선택: ") - 1;
+		int sel = textrpg.TextRPG.input("메뉴 선택: ");
 
 		if (sel < JOIN_PARTY || sel > LEAVE_PARTY) {
 			return;
@@ -135,24 +136,18 @@ public class Guild {
 	}
 
 	private void joinParty() {
-		textrpg.TextRPG.buffer.setLength(0);
-		textrpg.TextRPG.buffer.append("=== 파티원 목록 ===\n");
-		try {
-			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
-			textrpg.TextRPG.writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (partyCnt >= 3) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append("파티 자리가 없습니다.\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
 		}
-		player.partyList();
 
-		textrpg.TextRPG.buffer.setLength(0);
-		textrpg.TextRPG.buffer.append("\n=== 길드원 목록 ===\n");
-		try {
-			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
-			textrpg.TextRPG.writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		player.guildList();
 
 		int sel = textrpg.TextRPG.input("파티에 참가시킬 길드원 선택: ") - 1;
@@ -170,10 +165,8 @@ public class Guild {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 			return;
 		}
-
 		player.guilds.get(sel).setParty(true);
 		partyCnt++;
 	}
