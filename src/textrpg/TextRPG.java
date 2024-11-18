@@ -40,5 +40,18 @@ public class TextRPG {
 			e.printStackTrace();
 		}
 	}
+	
+	protected static int input(String msg) {
+		int num = -1;
+		try {
+			writer.append(msg);
+			writer.flush();
+			num = Integer.parseInt(reader.readLine());
+			return num;
+		} catch (Exception e) {
+			System.err.println("숫자 입력!");
+			return num;
+		}
+	}
 
 }
