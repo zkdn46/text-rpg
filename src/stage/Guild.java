@@ -1,6 +1,8 @@
 package stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Guild {
 	private final int VIEW = 1;
@@ -8,7 +10,10 @@ public class Guild {
 	private final int LEAVE = 3;
 	private final int PARTY = 4;
 
+	private Random ran = new Random();
+
 	private textrpg.Player player = textrpg.Player.getInstance();
+	private ArrayList<units.Hero> buyGuild = new ArrayList<>();
 
 	private static Guild instance = new Guild();
 
@@ -39,12 +44,37 @@ public class Guild {
 		if (sel == VIEW) {
 			player.guildList();
 		} else if (sel == ADD) {
-
+			addGuild();
 		} else if (sel == LEAVE) {
 			leaveGuild();
 		} else if (sel == PARTY) {
 
 		}
+	}
+
+	private void addGuild() {
+		CreateGuild();
+
+		int sel = textrpg.TextRPG.input("모집 할 길드원 선택: ") - 1;
+	}
+
+	private void CreateGuild() {
+		buyGuild.clear();
+		for (int i = 0; i < 3; i++) {
+			int ranHp = ran.nextInt(20) + 90;
+			int ranMp = ran.nextInt(20) + 90;
+			int ranAtt = ran.nextInt(10) + 1;
+			int ranDef = ran.nextInt(10) + 1;
+			buyGuild.add(new units.Hero(CreateClassType(), 1, ranHp, ranMp, ranAtt, ranDef));
+		}
+	}
+
+	private String CreateClassType() {
+		String[] classTypes = { "전사", "도적", "마법사", "힐러" };
+		int ranClass = ran.nextInt(4);
+		String ranclass = classTypes[ranClass];
+
+		return ranclass;
 	}
 
 	private void leaveGuild() {
