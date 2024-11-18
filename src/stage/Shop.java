@@ -3,8 +3,6 @@ package stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import testrpg.Item;
-
 public class Shop {
 	private final int BUY = 1;
 	private final int SELL = 2;
@@ -18,7 +16,12 @@ public class Shop {
 	private textrpg.Player player = textrpg.Player.getInstance();
 	protected ArrayList<textrpg.Item> itemList = new ArrayList<>();
 
-	public void shopRun() {
+	protected void shopRun() {
+		setItem();
+		printMenu();
+	}
+
+	protected void printMenu() {
 		textrpg.TextRPG.buffer.setLength(0);
 		textrpg.TextRPG.buffer.append("=== 더조은상점 === \n");
 		textrpg.TextRPG.buffer.append(String.format("현재 GOLD: %d\n", player.money));
@@ -37,6 +40,47 @@ public class Shop {
 		} else if (sel == SELL) {
 			sellMenu();
 		}
+	}
+
+	private void buyMenu() {
+		int i = 1;
+		for (textrpg.Item item : itemList) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append(i++ + "." + item + "\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		buy(textrpg.TextRPG.input("구매할 상품 선택: ") - 1);
+	}
+
+	private void buy(int x) {
+		if (itemList.get(x).getPrice() > player.money || x < 0 || x > 8) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append("구매실패\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		player.items.add(itemList.get(x));
+		player.money -= itemList.get(x).getPrice();
+		textrpg.TextRPG.buffer.setLength(0);
+		textrpg.TextRPG.buffer.append("구매완료\n");
+		try {
+			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+			textrpg.TextRPG.writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void setItem() {
