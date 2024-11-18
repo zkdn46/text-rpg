@@ -3,6 +3,8 @@ package textrpg;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import testrpg.Main;
+
 public class Player {
 	private boolean isRun;
 	public int money = 10000;
@@ -45,4 +47,21 @@ public class Player {
 			PrintEquip(TextRPG.input("뒤로가기(0)번 / 길드원 선택: ") - 1);
 		}
 	}
+	
+	private void PrintEquip(int x) {
+		if (x == -1) {
+			isRun = false;
+		}
+
+		if (x < 0 || x > guilds.size()) {
+			return;
+		}
+		guilds.get(x).printStatus();
+		guilds.get(x).printEquitedItem();
+
+		printItemList();
+
+		equip(x, TextRPG.input("종료(0)번 / 장착할 장비 선택: ") - 1);
+	}
+	
 }
