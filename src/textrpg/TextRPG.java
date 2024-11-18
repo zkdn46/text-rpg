@@ -16,6 +16,9 @@ public class TextRPG {
 	public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private boolean isRun = true;
 
+	private stage.Town town = stage.Town.getInstance();
+	private stage.Dungeon dungeon = stage.Dungeon.getInstance();
+
 	private static TextRPG instance = new TextRPG();
 
 	public static TextRPG getInstance() {
@@ -25,10 +28,41 @@ public class TextRPG {
 	public void run() {
 		while (isRun) {
 			printMenu();
-			
+			play();
 		}
 	}
-	
+
+	private void play() {
+		int sel = input("메뉴 선택: ");
+		if (sel == TOWN) {
+			town();
+		} else if (sel == DUNGEON) {
+			dungeon();
+		} else if (sel == EXIT) {
+			exit();
+		}
+	}
+
+	private void town() {
+		town.printMenu();
+	}
+
+	private void dungeon() {
+		dungeon.printMenu();
+	}
+
+	private void exit() {
+		buffer.setLength(0);
+		buffer.append("게임 종료.");
+		try {
+			writer.append(buffer);
+			writer.flush();
+			isRun = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void printMenu() {
 		buffer.setLength(0);
 		buffer.append("=== test RPG ===\n");
@@ -40,7 +74,7 @@ public class TextRPG {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected static int input(String msg) {
 		int num = -1;
 		try {
