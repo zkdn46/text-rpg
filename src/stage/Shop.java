@@ -12,19 +12,20 @@ public class Shop {
 	public static Shop getInstance() {
 		return instance;
 	}
-
+	
 	private textrpg.Player player = textrpg.Player.getInstance();
 	protected ArrayList<textrpg.Item> itemList = new ArrayList<>();
 
 	protected void shopRun() {
 		setItem();
 		printMenu();
+		shopSystem();
 	}
 
 	protected void printMenu() {
 		textrpg.TextRPG.buffer.setLength(0);
 		textrpg.TextRPG.buffer.append("=== 더조은상점 === \n");
-		textrpg.TextRPG.buffer.append(String.format("현재 GOLD: %d\n", player.money));
+		textrpg.TextRPG.buffer.append(String.format("현재 GOLD: %d\n", player.getMoney()));
 		textrpg.TextRPG.buffer.append("1)구매 2)판매 *)처음으로\n");
 		try {
 			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
@@ -32,7 +33,9 @@ public class Shop {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	protected void shopSystem() {
 		int sel = textrpg.TextRPG.input("메뉴 선택: ");
 
 		if (sel == BUY) {
@@ -58,7 +61,7 @@ public class Shop {
 	}
 
 	private void buy(int x) {
-		if (itemList.get(x).getPrice() > player.money || x < 0 || x > 8) {
+		if (itemList.get(x).getPrice() > player.getMoney() || x < 0 || x > 8) {
 			textrpg.TextRPG.buffer.setLength(0);
 			textrpg.TextRPG.buffer.append("구매실패\n");
 			try {
@@ -71,7 +74,7 @@ public class Shop {
 		}
 
 		player.items.add(itemList.get(x));
-		player.money -= itemList.get(x).getPrice();
+		player.setMoney(player.getMoney() - itemList.get(x).getPrice());
 		textrpg.TextRPG.buffer.setLength(0);
 		textrpg.TextRPG.buffer.append("구매완료\n");
 		try {
@@ -110,7 +113,7 @@ public class Shop {
 			return;
 		}
 
-		player.money += player.items.get(x).getPrice() / 2;
+		player.setMoney(player.getMoney() + (player.items.get(x).getPrice() / 2));
 		player.items.remove(x);
 		textrpg.TextRPG.buffer.setLength(0);
 		textrpg.TextRPG.buffer.append("판매완료\n");
