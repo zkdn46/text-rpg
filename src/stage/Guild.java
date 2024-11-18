@@ -150,6 +150,10 @@ public class Guild {
 
 		player.guildList();
 
+		if (player.guilds.size() == 0) {
+			return;
+		}
+
 		int sel = textrpg.TextRPG.input("파티에 참가시킬 길드원 선택: ") - 1;
 
 		if (sel < 0 || sel >= player.guilds.size()) {
@@ -172,7 +176,24 @@ public class Guild {
 	}
 
 	private void leaveParty() {
+		if (partyCnt == 0) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append("파티원이 없습니다.\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 
+		player.partyList();
+
+		int sel = textrpg.TextRPG.input("파티에서 추방시킬 길드원 선택: ") - 1;
+
+		player.guilds.get(sel).setParty(false);
+		partyCnt--;
 	}
 
 }
