@@ -5,11 +5,28 @@ import java.io.IOException;
 import textrpg.TextRPG;
 
 public class Hero extends Unit {
-	protected int exp;
-	protected boolean isParty;
-	protected textrpg.Item weapon;
-	protected textrpg.Item armor;
-	protected textrpg.Item ring;
+	private int exp;
+	private boolean isParty;
+
+	public int getExp() {
+		return exp;
+	}
+
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+
+	public boolean isParty() {
+		return isParty;
+	}
+
+	public void setParty(boolean isParty) {
+		this.isParty = isParty;
+	}
+
+	private textrpg.Item weapon;
+	private textrpg.Item armor;
+	private textrpg.Item ring;
 
 	public textrpg.Item getWeapon() {
 		return weapon;
@@ -47,6 +64,7 @@ public class Hero extends Unit {
 		TextRPG.buffer.setLength(0);
 		TextRPG.buffer.append(" [직업: " + classType + "] ");
 		TextRPG.buffer.append("[Lv." + level + "] ");
+		TextRPG.buffer.append("[파티: " + isParty + "] ");
 		TextRPG.buffer.append("\n");
 		TextRPG.buffer.append("[HP: " + hp + " / " + maxHp + "] ");
 		if (ring != null) {
