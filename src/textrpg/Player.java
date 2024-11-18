@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 public class Player {
 	private boolean isRun;
-	public int money = 10000;
+	private int money = 3000;
 
 	public ArrayList<Item> items = new ArrayList<>();
 	public ArrayList<units.Hero> guilds = new ArrayList<>();
-	public ArrayList<units.Hero> partys = new ArrayList<>();
 
 	private static Player instance = new Player();
 
@@ -17,13 +16,19 @@ public class Player {
 		return instance;
 	}
 
-	public void inventory() {
-		isRun = true;
-		guilds.add(new units.Hero("뭐", 1, 1, 1, 1, 1));
-		guildList();
+	public int getMoney() {
+		return money;
 	}
 
-	private void guildList() {
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	public void inventory() {
+		guildSelect();
+	}
+
+	public void guildList() {
 		if (guilds.size() == 0) {
 			TextRPG.buffer.setLength(0);
 			TextRPG.buffer.append("길드원이 없습니다.\n");
@@ -36,12 +41,28 @@ public class Player {
 			return;
 		}
 
-		while (isRun) {
-			for (int i = 0; i < guilds.size(); i++) {
-				System.out.print(i + 1 + ")");
+		for (int i = 0; i < guilds.size(); i++) {
+			System.out.print(i + 1 + ")");
+			guilds.get(i).printStatus();
+			guilds.get(i).printEquitedItem();
+		}
+	}
+
+	public void partyList() {
+		int num = 0;
+		for (int i = 0; i < guilds.size(); i++) {
+			if (guilds.get(i).isParty()) {
+				System.out.print(num++ + 1 + ")");
 				guilds.get(i).printStatus();
 				guilds.get(i).printEquitedItem();
 			}
+		}
+	}
+
+	private void guildSelect() {
+		isRun = true;
+		while (isRun) {
+			guildList();
 			PrintEquip(TextRPG.input("뒤로가기(0)번 / 길드원 선택: ") - 1);
 		}
 	}
@@ -51,7 +72,7 @@ public class Player {
 			isRun = false;
 		}
 
-		if (x < 0 || x > guilds.size()) {
+		if (x < 0 || x >= guilds.size()) {
 			return;
 		}
 		guilds.get(x).printStatus();
