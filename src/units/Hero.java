@@ -125,13 +125,12 @@ public class Hero extends Unit {
 
 	}
 
-	public boolean attack(Unit monster) {
+	public void attack(Unit monster) {
 		Monster target = (Monster) monster;
 
 		int damage = att - target.def;
 		if (damage < 1) {
 			System.err.println("MISS!");
-			return false;
 		}
 
 		target.hp -= damage;
@@ -154,11 +153,7 @@ public class Hero extends Unit {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return true;
-		} else {
-			return false;
 		}
-
 	}
 
 	public boolean skill(Unit monster, ArrayList<Hero> heros, ArrayList<Monster> monsters) {
