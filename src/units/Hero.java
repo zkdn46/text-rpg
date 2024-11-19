@@ -1,6 +1,7 @@
 package units;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import textrpg.TextRPG;
 
@@ -72,18 +73,18 @@ public class Hero extends Unit {
 			TextRPG.buffer.append("[HP: " + hp);
 		}
 		if (ring != null) {
-			TextRPG.buffer.append(" / " + maxHp + " + " + ring.getPower() + "] ");
+			TextRPG.buffer.append(" / " + maxHp + " + (" + ring.getPower() + ")] ");
 		} else {
 			TextRPG.buffer.append(" / " + maxHp + "] ");
 		}
 		TextRPG.buffer.append("[MP: " + mp + " / " + maxMp + "] ");
 		if (weapon != null) {
-			TextRPG.buffer.append("[ATT: " + att + " + " + weapon.getPower() + "] ");
+			TextRPG.buffer.append("[ATT: " + att + " + (" + weapon.getPower() + ")] ");
 		} else {
 			TextRPG.buffer.append("[ATT: " + att + "] ");
 		}
 		if (armor != null) {
-			TextRPG.buffer.append("[DEF: " + def + " + " + armor.getPower() + "] ");
+			TextRPG.buffer.append("[DEF: " + def + " + (" + armor.getPower() + ")] ");
 		} else {
 			TextRPG.buffer.append("[DEF: " + def + "] ");
 		}
@@ -127,7 +128,7 @@ public class Hero extends Unit {
 	public boolean attack(Unit monster) {
 		Monster target = (Monster) monster;
 
-		int damage = att + weapon.getPower() - target.def;
+		int damage = att - target.def;
 		if (damage < 1) {
 			System.err.println("MISS!");
 			return false;
@@ -160,15 +161,89 @@ public class Hero extends Unit {
 
 	}
 
-	public boolean skill(Unit monster) {
+	public boolean skill(Unit monster, ArrayList<Hero> heros, ArrayList<Monster> monsters) {
 		Monster target = (Monster) monster;
 
 		if (classType.equals("전사")) {
-			
+			if (mp < 20) {
+				System.err.println("마나 부족! 일반 공격!");
+				attack(target);
+			} else {
+				mp -= 20;
+
+				int damage = att * 2 - target.def;
+				if (damage < 1) {
+					System.err.println("MISS!");
+					return false;
+				}
+
+				target.hp -= damage;
+
+				TextRPG.buffer.setLength(0);
+				TextRPG.buffer.append("파워스트라이크!\n");
+				TextRPG.buffer.append(monster.classType + "에게 피해 " + damage + " 입힘\n");
+				try {
+					TextRPG.writer.append(TextRPG.buffer);
+					TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
 		} else if (classType.equals("마법사")) {
+			if (mp < 20) {
+				System.err.println("마나 부족! 일반 공격!");
+				attack(target);
+			} else {
+				mp -= 20;
 
+				TextRPG.buffer.setLength(0);
+				TextRPG.buffer.append("전체 공격!\n");
+				try {
+					TextRPG.writer.append(TextRPG.buffer);
+					TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				for (Monster monsterAll : monsters) {
+					int damage = att - monsterAll.def;
+					if (damage < 1) {
+						System.err.println("MISS!");
+					} else {
+						monsterAll.hp -= damage;
+					}
+				}
+
+			}
 		} else if (classType.equals("힐러")) {
+			if (mp < 20) {
+				System.err.println("마나 부족! 일반 공격!");
+				attack(target);
+			} else {
+				mp -= 30;
 
+				TextRPG.buffer.setLength(0);
+				TextRPG.buffer.append("광역 회복!\n");
+				try {
+					TextRPG.writer.append(TextRPG.buffer);
+					TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				for (Hero heroAll : heros) {
+					heroAll.hp += 10;
+					if (heroAll.hp > heroAll.maxHp) {
+						heroAll.hp = heroAll.maxHp;
+					}
+					heroAll.mp += 10;
+					if (heroAll.mp > heroAll.maxMp) {
+						heroAll.mp = heroAll.maxMp;
+					}
+				}
+
+			}
 		}
 
 		if (target.hp < 1) {
