@@ -12,13 +12,45 @@ public abstract class Unit {
 	public void levelup() {
 		this.level++;
 		this.hp += 20;
-		this.mp += 5;
+		this.mp += 10;
 		this.att += 2;
 		this.def += 2;
 	}
 
+	public void setMp(int mp) {
+		this.mp = mp;
+	}
+
 	protected int level;
 
+	public int getMaxHp() {
+		return maxHp;
+	}
+
+	public int getMaxMp() {
+		return maxMp;
+	}
+	
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public void equipHp(int power) {
+		this.hp += power;
+	}
+
+	public void equipAtt(int power) {
+		this.att += power;
+	}
+
+	public void equipDef(int power) {
+		this.def += power;
+	}
+
+	public int getHp() {
+		return hp;
+	}
+	
 	protected Unit() {
 
 	}
@@ -33,8 +65,12 @@ public abstract class Unit {
 		this.att = att;
 		this.def = def;
 	}
+	
+	public abstract boolean attack(Unit enenmy);
+	
+	public String toString() {
+		return String.format("[%s] [Lv.%d]\n[HP: %d/%d] [MP: %d/%d] [ATT: %d] [DEF: %d]", classType, level, hp, maxHp,
+				mp, maxMp, att, def);
+	}
 
-	abstract boolean attack(Unit enenmy);
-
-	abstract boolean skill(Unit enenmy);
 }
