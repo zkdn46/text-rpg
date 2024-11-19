@@ -12,7 +12,7 @@ public class Shop {
 	public static Shop getInstance() {
 		return instance;
 	}
-	
+
 	private textrpg.Player player = textrpg.Player.getInstance();
 	protected ArrayList<textrpg.Item> itemList = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class Shop {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected void shopSystem() {
 		int sel = textrpg.TextRPG.input("메뉴 선택: ");
 
@@ -61,7 +61,7 @@ public class Shop {
 	}
 
 	private void buy(int x) {
-		if (itemList.get(x).getPrice() > player.getMoney() || x < 0 || x > 8) {
+		if (x < 0 || x > 8 || itemList.get(x).getPrice() > player.getMoney()) {
 			textrpg.TextRPG.buffer.setLength(0);
 			textrpg.TextRPG.buffer.append("구매실패\n");
 			try {
