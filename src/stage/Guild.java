@@ -76,7 +76,7 @@ public class Guild {
 		for (int i = 0; i < 3; i++) {
 			int ranHp = ran.nextInt(20) + 90;
 			int ranMp = ran.nextInt(20) + 90;
-			int ranAtt = ran.nextInt(10) + 3;
+			int ranAtt = ran.nextInt(10) + 5;
 			int ranDef = ran.nextInt(10) + 1;
 			buyGuild.add(new units.Hero(CreateClassType(), 1, ranHp, ranMp, ranAtt, ranDef));
 		}
