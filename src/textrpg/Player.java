@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Player {
 	private boolean isRun;
-	private int money = 3000;
+	private int money = 30000;
 
 	public ArrayList<Item> items = new ArrayList<>();
 	public ArrayList<units.Hero> guilds = new ArrayList<>();
@@ -119,27 +119,36 @@ public class Player {
 		if (items.get(item).getKind() == Item.WEAPON) {
 			if (guilds.get(idx).getWeapon() == null) {
 				guilds.get(idx).setWeapon(items.get(item));
+				guilds.get(idx).equipAtt(items.get(item).getPower());
 				items.remove(item);
 			} else {
 				items.add(guilds.get(idx).getWeapon());
+				guilds.get(idx).equipAtt(-guilds.get(idx).getWeapon().getPower());
+				guilds.get(idx).equipAtt(items.get(item).getPower());
 				guilds.get(idx).setWeapon(items.get(item));
 				items.remove(item);
 			}
 		} else if (items.get(item).getKind() == Item.ARMOR) {
 			if (guilds.get(idx).getArmor() == null) {
 				guilds.get(idx).setArmor(items.get(item));
+				guilds.get(idx).equipDef(items.get(item).getPower());
 				items.remove(item);
 			} else {
 				items.add(guilds.get(idx).getArmor());
+				guilds.get(idx).equipDef(-guilds.get(idx).getWeapon().getPower());
+				guilds.get(idx).equipDef(items.get(item).getPower());
 				guilds.get(idx).setArmor(items.get(item));
 				items.remove(item);
 			}
 		} else if (items.get(item).getKind() == Item.RING) {
 			if (guilds.get(idx).getRing() == null) {
 				guilds.get(idx).setRing(items.get(item));
+				guilds.get(idx).equipHp(items.get(item).getPower());
 				items.remove(item);
 			} else {
 				items.add(guilds.get(idx).getRing());
+				guilds.get(idx).equipHp(-guilds.get(idx).getWeapon().getPower());
+				guilds.get(idx).equipHp(items.get(item).getPower());
 				guilds.get(idx).setRing(items.get(item));
 				items.remove(item);
 			}
