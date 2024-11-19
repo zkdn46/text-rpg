@@ -65,6 +65,9 @@ public class Dungeon {
 	private void battleRun() {
 		battleSet();
 		battle();
+		if (!isRun) {
+			recovery();
+		}
 	}
 
 	private void battleSet() {
@@ -81,6 +84,7 @@ public class Dungeon {
 	}
 
 	private void CreateMonsterParty() {
+		monsters.clear();
 		for (int i = 0; i < 4; i++) {
 			int ranMonster = Guild.ran.nextInt(3);
 			int ranHp = Guild.ran.nextInt(20) + 40;
@@ -200,22 +204,21 @@ public class Dungeon {
 		player.setMoney(player.getMoney() + ranMoney);
 
 		int ranExp = (Guild.ran.nextInt(50) + (5 * lv));
-		for (int i = 0; i < player.guilds.size(); i++) {
-			Hero target = player.guilds.get(i);
-			if (target.isParty()) {
-				target.plusExp(ranExp);
-				if (target.getExp() >= 100) {
-					target.plusExp(-100);
-					target.levelup();
 
-					textrpg.TextRPG.buffer.setLength(0);
-					textrpg.TextRPG.buffer.append("레벨업!\n");
-					try {
-						textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
-						textrpg.TextRPG.writer.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		for (int i = 0; i < heros.size(); i++) {
+			Hero target = heros.get(i);
+			target.plusExp(ranExp);
+			if (target.getExp() >= 100) {
+				target.plusExp(-100);
+				target.levelup();
+
+				textrpg.TextRPG.buffer.setLength(0);
+				textrpg.TextRPG.buffer.append("레벨업!\n");
+				try {
+					textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+					textrpg.TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -231,7 +234,7 @@ public class Dungeon {
 				monsters.remove(ranAttack);
 			}
 		} else if (sel == 2) {
-			if (heros.get(idx).skill(monsters.get(ranAttack))) {
+			if (heros.get(idx).skill(monsters.get(ranAttack), heros, monsters)) {
 				monsterKillCnt++;
 				monsters.remove(ranAttack);
 			}
@@ -239,7 +242,15 @@ public class Dungeon {
 	}
 
 	private void monsterAttack() {
-		
+
+	}
+
+	private void recovery() {
+		for (int i = 0; i < heros.size(); i++) {
+			Hero target = heros.get(i);
+			target.setHp(target.getMaxHp());
+			target.setMp(target.getMaxMp());
+		}
 	}
 
 }
