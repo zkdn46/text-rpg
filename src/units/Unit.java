@@ -8,6 +8,15 @@ public abstract class Unit {
 	protected int maxMp;
 	protected int att;
 	protected int def;
+
+	public void levelup() {
+		this.level++;
+		this.hp += 20;
+		this.mp += 5;
+		this.att += 2;
+		this.def += 2;
+	}
+
 	protected int level;
 
 	protected Unit() {
@@ -24,4 +33,8 @@ public abstract class Unit {
 		this.att = att;
 		this.def = def;
 	}
+
+	abstract boolean attack(Unit enenmy);
+
+	abstract boolean skill(Unit enenmy);
 }
