@@ -19,12 +19,11 @@ public class Dungeon {
 	}
 
 	private int lv;
-	private int monsterKillCnt;
-	private int killCnt;
 
 	private Player player = Player.getInstance();
 
 	private ArrayList<units.Hero> heros = new ArrayList<>();
+	private ArrayList<units.Hero> battleHeros = new ArrayList<>();
 	private ArrayList<units.Monster> monsters = new ArrayList<>();
 
 	private boolean isRun = true;
@@ -65,9 +64,6 @@ public class Dungeon {
 	private void battleRun() {
 		battleSet();
 		battle();
-		if (!isRun) {
-			recovery();
-		}
 	}
 
 	private void battleSet() {
@@ -76,9 +72,12 @@ public class Dungeon {
 	}
 
 	private void CreateHeroParty() {
+		battleHeros.clear();
+		heros.clear();
 		for (int i = 0; i < player.guilds.size(); i++) {
 			if (player.guilds.get(i).isParty()) {
 				heros.add(player.guilds.get(i));
+				battleHeros.add(player.guilds.get(i));
 			}
 		}
 	}
@@ -103,12 +102,10 @@ public class Dungeon {
 	}
 
 	private void battle() {
-		monsterKillCnt = 0;
-		killCnt = 0;
 		while (isRun) {
-			printBattle();
 			action();
 		}
+		recovery();
 	}
 
 	private void printBattle() {
@@ -143,12 +140,24 @@ public class Dungeon {
 			e.printStackTrace();
 		}
 
-		player.partyList();
+		i = 1;
+		for (Hero heroList : battleHeros) {
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append(i++ + ") ");
+			textrpg.TextRPG.buffer.append(heroList + "\n");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void action() {
 		int i = 1;
 		while (i <= Guild.partyCnt) {
+			printBattle();
 			int sel = textrpg.TextRPG.input(i + "번 HERO [1]공격 [2]스킬 [0]종료: ");
 
 			if (sel < 0 || sel > 2) {
@@ -160,15 +169,17 @@ public class Dungeon {
 				isRun = false;
 				break;
 			}
-
+			
 			attack(i - 1, sel);
-
+			
+			i++;
+			
 			if (i > Guild.partyCnt) {
 				i = 1;
 				monsterAttack();
 			}
-			System.out.println(monsterKillCnt);
-			if (killCnt == Guild.partyCnt) {
+
+			if (battleHeros.size() == 0) {
 				textrpg.TextRPG.buffer.setLength(0);
 				textrpg.TextRPG.buffer.append("전투 패배...\n");
 				try {
@@ -180,12 +191,11 @@ public class Dungeon {
 
 				isRun = false;
 				break;
-			} else if (monsterKillCnt == 4) {
+			} else if (monsters.size() == 0) {
 				result();
 				isRun = false;
 				break;
 			}
-			i++;
 		}
 	}
 
@@ -229,20 +239,27 @@ public class Dungeon {
 		int ranAttack = Guild.ran.nextInt(monsters.size());
 
 		if (sel == 1) {
-			if (heros.get(idx).attack(monsters.get(ranAttack))) {
-				monsterKillCnt++;
-				monsters.remove(ranAttack);
-			}
+			battleHeros.get(idx).attack(monsters.get(ranAttack));
+
 		} else if (sel == 2) {
-			if (heros.get(idx).skill(monsters.get(ranAttack), heros, monsters)) {
-				monsterKillCnt++;
-				monsters.remove(ranAttack);
+			battleHeros.get(idx).skill(monsters.get(ranAttack), battleHeros, monsters);
+		}
+
+		for (int i = 0; i < monsters.size(); i++) {
+			if (monsters.get(i).getHp() < 1) {
+				monsters.remove(i);
 			}
 		}
 	}
 
 	private void monsterAttack() {
-
+		for (int i = 0; i < monsters.size(); i++) {
+			int ranAttack = Guild.ran.nextInt(battleHeros.size());
+			monsters.get(i).attack(battleHeros.get(ranAttack));
+			if (battleHeros.get(ranAttack).getHp() < 1) {
+				battleHeros.remove(ranAttack);
+			}
+		}
 	}
 
 	private void recovery() {
