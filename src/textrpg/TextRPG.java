@@ -60,7 +60,7 @@ public class TextRPG {
 	}
 
 	private void dungeon() {
-		dungeon.printMenu();
+		dungeon.dungeonRun();
 	}
 
 	private void exit() {
