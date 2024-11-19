@@ -13,9 +13,9 @@ public class Guild {
 	private final int JOIN_PARTY = 1;
 	private final int LEAVE_PARTY = 2;
 
-	private Random ran = new Random();
+	protected static Random ran = new Random();
 
-	private int partyCnt = 0;
+	protected static int partyCnt = 0;
 
 	private textrpg.Player player = textrpg.Player.getInstance();
 	private ArrayList<units.Hero> buyGuild = new ArrayList<>();
@@ -61,6 +61,12 @@ public class Guild {
 		CreateGuild();
 		printBuyGuild();
 		int sel = textrpg.TextRPG.input("소지금: " + player.getMoney() + "\n모집 할 길드원 선택(구매가격 1000): ") - 1;
+
+		if (sel < 0 || sel > 2) {
+			System.err.println("0~2 입력!");
+			return;
+		}
+
 		player.guilds.add(buyGuild.get(sel));
 		player.setMoney(player.getMoney() - 1000);
 	}
@@ -70,15 +76,15 @@ public class Guild {
 		for (int i = 0; i < 3; i++) {
 			int ranHp = ran.nextInt(20) + 90;
 			int ranMp = ran.nextInt(20) + 90;
-			int ranAtt = ran.nextInt(10) + 1;
+			int ranAtt = ran.nextInt(10) + 3;
 			int ranDef = ran.nextInt(10) + 1;
 			buyGuild.add(new units.Hero(CreateClassType(), 1, ranHp, ranMp, ranAtt, ranDef));
 		}
 	}
 
 	private String CreateClassType() {
-		String[] classTypes = { "전사", "도적", "마법사", "힐러" };
-		int ranClass = ran.nextInt(4);
+		String[] classTypes = { "전사", "마법사", "힐러" };
+		int ranClass = ran.nextInt(classTypes.length);
 		String ranclass = classTypes[ranClass];
 
 		return ranclass;
@@ -86,7 +92,14 @@ public class Guild {
 
 	private void printBuyGuild() {
 		for (int i = 0; i < buyGuild.size(); i++) {
-			System.out.print(i + 1 + ")");
+			textrpg.TextRPG.buffer.setLength(0);
+			textrpg.TextRPG.buffer.append(i + 1 + ")");
+			try {
+				textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+				textrpg.TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			buyGuild.get(i).printStatus();
 			buyGuild.get(i).printEquitedItem();
 		}
