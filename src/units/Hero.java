@@ -12,8 +12,8 @@ public class Hero extends Unit {
 		return exp;
 	}
 
-	public void setExp(int exp) {
-		this.exp = exp;
+	public void plusExp(int exp) {
+		this.exp += exp;
 	}
 
 	public boolean isParty() {
@@ -66,17 +66,17 @@ public class Hero extends Unit {
 		TextRPG.buffer.append("[Lv." + level + "] ");
 		TextRPG.buffer.append("[파티: " + isParty + "] ");
 		TextRPG.buffer.append("\n");
-		TextRPG.buffer.append("[HP: " + hp + " / " + maxHp + "] ");
 		if (ring != null) {
-			TextRPG.buffer.append("[MP: " + mp + " + " + ring.getPower());
+			TextRPG.buffer.append("[HP: " + hp + " + " + ring.getPower());
 		} else {
-			TextRPG.buffer.append("[MP: " + mp);
+			TextRPG.buffer.append("[HP: " + hp);
 		}
 		if (ring != null) {
-			TextRPG.buffer.append(" / " + maxMp + " + " + ring.getPower() + "] ");
+			TextRPG.buffer.append(" / " + maxHp + " + " + ring.getPower() + "] ");
 		} else {
-			TextRPG.buffer.append(" / " + maxMp + "] ");
+			TextRPG.buffer.append(" / " + maxHp + "] ");
 		}
+		TextRPG.buffer.append("[MP: " + mp + " / " + maxMp + "] ");
 		if (weapon != null) {
 			TextRPG.buffer.append("[ATT: " + att + " + " + weapon.getPower() + "] ");
 		} else {
@@ -120,6 +120,69 @@ public class Hero extends Unit {
 			TextRPG.writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+
+	}
+
+	public boolean attack(Unit monster) {
+		Monster target = (Monster) monster;
+
+		int damage = att + weapon.getPower() - target.def;
+		if (damage < 1) {
+			System.err.println("MISS!");
+			return false;
+		}
+
+		target.hp -= damage;
+
+		TextRPG.buffer.setLength(0);
+		TextRPG.buffer.append(monster.classType + "에게 피해 " + damage + " 입힘\n");
+		try {
+			TextRPG.writer.append(TextRPG.buffer);
+			TextRPG.writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (target.hp < 1) {
+			TextRPG.buffer.setLength(0);
+			TextRPG.buffer.append("몬스터 사망\n");
+			try {
+				TextRPG.writer.append(TextRPG.buffer);
+				TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public boolean skill(Unit monster) {
+		Monster target = (Monster) monster;
+
+		if (classType.equals("전사")) {
+			
+		} else if (classType.equals("마법사")) {
+
+		} else if (classType.equals("힐러")) {
+
+		}
+
+		if (target.hp < 1) {
+			TextRPG.buffer.setLength(0);
+			TextRPG.buffer.append("몬스터 사망\n");
+			try {
+				TextRPG.writer.append(TextRPG.buffer);
+				TextRPG.writer.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		} else {
+			return false;
 		}
 
 	}
