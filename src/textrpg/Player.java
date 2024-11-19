@@ -28,23 +28,27 @@ public class Player {
 		guildSelect();
 	}
 
+	private void guildSelect() {
+		isRun = true;
+		while (isRun) {
+			guildList();
+			if (isRun) {
+				PrintEquip(TextRPG.input("뒤로가기(0)번 / 길드원 선택: ") - 1);
+			}
+		}
+	}
+
 	public void guildList() {
 		if (guilds.size() == 0) {
-			TextRPG.buffer.setLength(0);
-			TextRPG.buffer.append("길드원이 없습니다.\n");
-			try {
-				TextRPG.writer.append(TextRPG.buffer);
-				TextRPG.writer.flush();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			System.err.println("길드원이 없습니다.");
+			isRun = false;
 			return;
-		}
-
-		for (int i = 0; i < guilds.size(); i++) {
-			System.out.print(i + 1 + ")");
-			guilds.get(i).printStatus();
-			guilds.get(i).printEquitedItem();
+		} else {
+			for (int i = 0; i < guilds.size(); i++) {
+				System.out.print(i + 1 + ")");
+				guilds.get(i).printStatus();
+				guilds.get(i).printEquitedItem();
+			}
 		}
 	}
 
@@ -56,14 +60,6 @@ public class Player {
 				guilds.get(i).printStatus();
 				guilds.get(i).printEquitedItem();
 			}
-		}
-	}
-
-	private void guildSelect() {
-		isRun = true;
-		while (isRun) {
-			guildList();
-			PrintEquip(TextRPG.input("뒤로가기(0)번 / 길드원 선택: ") - 1);
 		}
 	}
 
