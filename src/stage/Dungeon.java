@@ -18,9 +18,9 @@ public class Dungeon {
 		return instance;
 	}
 
-	private int killCnt;
-	private int monsterKillCnt;
 	private int lv;
+	private int monsterKillCnt;
+	private int killCnt;
 
 	private Player player = Player.getInstance();
 
@@ -46,6 +46,7 @@ public class Dungeon {
 	}
 
 	private void selectMenu(int sel) {
+		isRun = true;
 		if (Guild.partyCnt == 0) {
 			System.err.println("파티원이 없습니다.");
 			return;
@@ -85,7 +86,7 @@ public class Dungeon {
 			int ranHp = Guild.ran.nextInt(20) + 40;
 			int ranMp = Guild.ran.nextInt(20) + 40;
 			int ranAtt = Guild.ran.nextInt(4);
-			int ranDef = Guild.ran.nextInt(4);
+			int ranDef = Guild.ran.nextInt(3);
 
 			if (ranMonster == ORC) {
 				monsters.add(new units.Orc("오크", lv, ranHp, ranMp, ranAtt, ranDef));
@@ -98,6 +99,8 @@ public class Dungeon {
 	}
 
 	private void battle() {
+		monsterKillCnt = 0;
+		killCnt = 0;
 		while (isRun) {
 			printBattle();
 			action();
@@ -141,14 +144,26 @@ public class Dungeon {
 
 	private void action() {
 		int i = 1;
-		while (i < 4) {
-			attack(i - 1, textrpg.TextRPG.input(i++ + "번 HERO [1]공격 [2]스킬: "));
+		while (i <= Guild.partyCnt) {
+			int sel = textrpg.TextRPG.input(i + "번 HERO [1]공격 [2]스킬 [0]종료: ");
 
-			if (i == 4) {
+			if (sel < 0 || sel > 2) {
+				System.err.println("0 ~ 2 입력!");
+				return;
+			}
+
+			if (sel == 0) {
+				isRun = false;
+				break;
+			}
+
+			attack(i - 1, sel);
+
+			if (i > Guild.partyCnt) {
 				i = 1;
 				monsterAttack();
 			}
-
+			System.out.println(monsterKillCnt);
 			if (killCnt == Guild.partyCnt) {
 				textrpg.TextRPG.buffer.setLength(0);
 				textrpg.TextRPG.buffer.append("전투 패배...\n");
@@ -166,6 +181,7 @@ public class Dungeon {
 				isRun = false;
 				break;
 			}
+			i++;
 		}
 	}
 
@@ -203,21 +219,27 @@ public class Dungeon {
 				}
 			}
 		}
-		
+
 	}
 
 	private void attack(int idx, int sel) {
-		int ranAttack = Guild.ran.nextInt(3);
+		int ranAttack = Guild.ran.nextInt(monsters.size());
 
 		if (sel == 1) {
-			heros.get(idx).attack(monsters.get(ranAttack));
+			if (heros.get(idx).attack(monsters.get(ranAttack))) {
+				monsterKillCnt++;
+				monsters.remove(ranAttack);
+			}
 		} else if (sel == 2) {
-			heros.get(idx).skill(monsters.get(ranAttack));
+			if (heros.get(idx).skill(monsters.get(ranAttack))) {
+				monsterKillCnt++;
+				monsters.remove(ranAttack);
+			}
 		}
 	}
 
 	private void monsterAttack() {
-
+		
 	}
 
 }
