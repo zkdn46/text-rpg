@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import textrpg.Player;
+import units.Hero;
 import units.Monster;
 
 public class Dungeon {
@@ -161,23 +162,48 @@ public class Dungeon {
 				isRun = false;
 				break;
 			} else if (monsterKillCnt == 4) {
-				int ranMoney = (Guild.ran.nextInt(500) + 800) * lv;
-
-				textrpg.TextRPG.buffer.setLength(0);
-				textrpg.TextRPG.buffer.append("전투 승리! ");
-				textrpg.TextRPG.buffer.append(ranMoney + "골드 획득\n");
-				try {
-					textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
-					textrpg.TextRPG.writer.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				player.setMoney(player.getMoney() + ranMoney);
+				result();
 				isRun = false;
 				break;
 			}
 		}
+	}
+
+	private void result() {
+		int ranMoney = (Guild.ran.nextInt(500) + 800) * lv;
+
+		textrpg.TextRPG.buffer.setLength(0);
+		textrpg.TextRPG.buffer.append("전투 승리! ");
+		textrpg.TextRPG.buffer.append(ranMoney + "골드 획득\n");
+		try {
+			textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+			textrpg.TextRPG.writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		player.setMoney(player.getMoney() + ranMoney);
+
+		int ranExp = (Guild.ran.nextInt(50) + (5 * lv));
+		for (int i = 0; i < player.guilds.size(); i++) {
+			Hero target = player.guilds.get(i);
+			if (target.isParty()) {
+				target.plusExp(ranExp);
+				if (target.getExp() >= 100) {
+					target.plusExp(-100);
+					target.levelup();
+
+					textrpg.TextRPG.buffer.setLength(0);
+					textrpg.TextRPG.buffer.append("레벨업!\n");
+					try {
+						textrpg.TextRPG.writer.append(textrpg.TextRPG.buffer);
+						textrpg.TextRPG.writer.flush();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
 	}
 
 	private void attack(int idx, int sel) {
