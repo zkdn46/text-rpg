@@ -45,7 +45,14 @@ public class Player {
 			return;
 		} else {
 			for (int i = 0; i < guilds.size(); i++) {
-				System.out.print(i + 1 + ")");
+				TextRPG.buffer.setLength(0);
+				TextRPG.buffer.append(i + 1 + ")");
+				try {
+					TextRPG.writer.append(TextRPG.buffer);
+					TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				guilds.get(i).printStatus();
 				guilds.get(i).printEquitedItem();
 			}
@@ -56,7 +63,14 @@ public class Player {
 		int num = 0;
 		for (int i = 0; i < guilds.size(); i++) {
 			if (guilds.get(i).isParty()) {
-				System.out.print(num++ + 1 + ")");
+				TextRPG.buffer.setLength(0);
+				TextRPG.buffer.append(num++ + 1 + ")");
+				try {
+					TextRPG.writer.append(TextRPG.buffer);
+					TextRPG.writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				guilds.get(i).printStatus();
 				guilds.get(i).printEquitedItem();
 			}
