@@ -66,7 +66,7 @@ public abstract class Unit {
 		this.def = def;
 	}
 	
-	public abstract boolean attack(Unit enenmy);
+	public abstract void attack(Unit enenmy);
 	
 	public String toString() {
 		return String.format("[%s] [Lv.%d]\n[HP: %d/%d] [MP: %d/%d] [ATT: %d] [DEF: %d]", classType, level, hp, maxHp,
