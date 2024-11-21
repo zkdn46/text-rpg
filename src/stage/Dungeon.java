@@ -253,7 +253,7 @@ public class Dungeon {
 	}
 
 	private void monsterAttack() {
-		for (int i = 0; i < monsters.size(); i++) {
+		for (int i = 0; i < battleHeros.size(); i++) {
 			int ranAttack = Guild.ran.nextInt(battleHeros.size());
 			monsters.get(i).attack(battleHeros.get(ranAttack));
 			if (battleHeros.get(ranAttack).getHp() < 1) {
