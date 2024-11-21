@@ -7,7 +7,7 @@ import textrpg.TextRPG;
 
 public class Orc extends Monster {
 
-	private Random ran = new Random();
+	protected static Random ran = new Random();
 
 	public Orc(String classType, int level, int hp, int mp, int att, int def) {
 		super(classType, level, hp + 30, mp, att + 5, def);
